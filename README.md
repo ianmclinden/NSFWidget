@@ -12,7 +12,7 @@
 Lightweight stock ticker tape for the Raspberry Pi Zero W, and Pimoroni's Four Letter pHAT.
 
 ## About:
-![NSFWidget Preview Image]()
+![NSFWidget Preview Image](https://user-images.githubusercontent.com/8931381/29596957-454cade8-8785-11e7-8d44-068dc45133a3.gif)
 
 ## Hardware List:
 - [Raspberry Pi Zero W](https://www.raspberrypi.org/products/raspberry-pi-zero-w/)
