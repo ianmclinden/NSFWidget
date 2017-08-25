@@ -59,7 +59,7 @@ Then, run using the python environment using
 ```
 
 ## Files:
-- [nsfw.pi](nsfw.pi): Main logic
+- [nsfw.py](nsfw.py): Main logic
 - [stocks.conf](stocks.conf): Configures what stocks to watch
 - [install.sh](install.sh): Installation script
 
