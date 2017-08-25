@@ -25,6 +25,8 @@ try:
     from collections import defaultdict
     from functools import partial
     import fourletterphat as flp
+    import socket
+    import urllib2
     from yahoo_finance import Share
     import time
 except Exception as e:
@@ -43,6 +45,7 @@ def main():
     flp.clear()
     flp.show()
 
+    wait_for_internet_connection()
     stocks = get_stocks_from_config("stocks.conf")
 
     print("Watching Stocks:")
@@ -126,8 +129,21 @@ def get_stocks_from_config(conf_filename):
             # Stocks list of ('symbol', shares, Share())
             return [(x[0], float(x[1]), Share(x[0])) if len(x)>1 else (x[0],0.0,Share(x[0])) for x in lines]
 
-    except:
+    except urllib2.HTTPError as e:
+        if (e.code == 400):
+            return get_stocks_from_config(conf_filename)
+    except Error as e:
+        print(e)
         sys.exit("Error loading stock info from file: "+conf_filename)
+
+def wait_for_internet_connection():
+    while True:
+        try:
+            socket.setdefaulttimeout(1)
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("8.8.8.8", 53))
+            return
+        except Exception:
+            pass
 
 # System and error handler
 if __name__ == '__main__':
