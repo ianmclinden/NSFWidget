@@ -35,18 +35,19 @@ except Exception as e:
 
 
 def main():
-    print(infotext)
-    print("\nPress Ctrl-C to exit.\n")
-
     flp.clear()
     flp.print_str("NSFW")
     flp.show()
-    flp.glow(period=1, duration=4)
-    flp.clear()
-    flp.show()
+
+    print(infotext)
+    print("\nPress Ctrl-C to exit.\n")
 
     wait_for_internet_connection()
     stocks = get_stocks_from_config("stocks.conf")
+
+    flp.glow(period=0.5, duration=4)
+    flp.clear()
+    flp.show()
 
     print("Watching Stocks:")
     print("\n".join([sym+": "+share.get_name()+" ("+str(own)+" owned)" for sym,own,share in stocks]))
@@ -70,18 +71,16 @@ def show_latest(stocks):
 
         try:
             share.refresh()
+        except Exception as e:
             time.sleep(0.5)
 
-            pstr +="  $"+ share.get_price() +" "+ share.get_currency()
+        pstr +="  $"+ share.get_price() +" "+ share.get_currency()
 
-            if (owned>0):
-                # Append folio info if any stocks owned
-                total = float(share.get_price())*float(owned)
-                pstr +=", "+ str(round(owned,3))+ " OWNED, VAL $"+ str(round(total,2)) +" "+ share.get_currency()
-                folio[share.get_currency()] += total
-
-        except Exception as e:
-            pstr = "INET ERROR"
+        if (owned>0):
+            # Append folio info if any stocks owned
+            total = float(share.get_price())*float(owned)
+            pstr +=", "+ str(round(owned,3))+ " OWNED, VAL $"+ str(round(total,2)) +" "+ share.get_currency()
+            folio[share.get_currency()] += total
 
         scroll_print_float_str(pstr, interval=0.2)
         flp.clear()
@@ -119,22 +118,24 @@ def get_stocks_from_config(conf_filename):
     if (len(sys.argv)>1):
         conf_filename = sys.argv[1]
 
-    try:
-        with open(conf_filename) as conf_f:
-            lines = conf_f.readlines()
-            # Strip whitespace and capitalize, remove comments and empty lines
-            lines[:] = [x.strip().upper() for x in lines if x.strip()]
-            lines[:] = [x.split() for x in lines if not x.startswith("#")]
+    while True:
+        try:
+            with open(conf_filename) as conf_f:
+                lines = conf_f.readlines()
+                # Strip whitespace and capitalize, remove comments and empty lines
+                lines[:] = [x.strip().upper() for x in lines if x.strip()]
+                lines[:] = [x.split() for x in lines if not x.startswith("#")]
 
-            # Stocks list of ('symbol', shares, Share())
-            return [(x[0], float(x[1]), Share(x[0])) if len(x)>1 else (x[0],0.0,Share(x[0])) for x in lines]
+                # Stocks list of ('symbol', shares, Share())
+                return [(x[0], float(x[1]), Share(x[0])) if len(x)>1 else (x[0],0.0,Share(x[0])) for x in lines]
 
-    except urllib2.HTTPError as e:
-        if (e.code == 400):
-            return get_stocks_from_config(conf_filename)
-    except Error as e:
-        print(e)
-        sys.exit("Error loading stock info from file: "+conf_filename)
+        except urllib2.HTTPError as e:
+            # wait for a good config load
+            if (e.code == 400):
+                pass
+        except Exception as e:
+            print(e)
+            sys.exit("Error loading stock info from file: "+conf_filename)
 
 def wait_for_internet_connection():
     while True:
