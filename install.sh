@@ -58,6 +58,6 @@ echo "  * stocks.conf copied to /etc/nsfw/stocks.conf"
 
 #  Add crontab job for startup - optional
 if [ "$ONBOOT" -eq "1" ]; then
-    crontab -l | { cat; echo "@reboot /usr/local/bin/nsfw > /var/log/nsfw.log 2>&1"; } | crontab -
+    crontab -l | { cat; echo "@reboot /usr/local/bin/nsfw >/var/log/nsfw.log 2>&1"; } | crontab -
     echo "- Added crontab job at reboot"
 fi
