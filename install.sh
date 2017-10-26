@@ -40,24 +40,48 @@ python -m pip install fourletterphat
 python -m pip install yahoo-finance
 
 #  Copy files && change permissions
+NSFW_DIR=/etc/nsfw
 echo "- Copying files"
 
-printf "#!/bin/sh\ncd /etc/nsfw/\npython nsfw.py /etc/nsfw/stocks.conf" > /usr/local/bin/nsfw
-chmod a+x /usr/local/bin/nsfw
-echo "  * nsfw copied to /usr/local/bin/nsfw"
-
-mkdir -p /etc/nsfw/
+mkdir -p $NSFW_DIR
 
 chmod a+x nsfw.py
-cp nsfw.py /etc/nsfw/
-echo "  * nsfw.py copied to /etc/nsfw/nsfw.py"
+cp nsfw.py $NSFW_DIR
+echo "  * nsfw.py copied to ${NSFW_DIR}/nsfw.py"
 
 chmod a+r stocks.conf
-cp stocks.conf /etc/nsfw/
-echo "  * stocks.conf copied to /etc/nsfw/stocks.conf"
+cp stocks.conf $NSFW_DIR
+echo "  * stocks.conf copied to ${NSFW_DIR}/stocks.conf"
 
-#  Add crontab job for startup - optional
+# Create nsfw.service file
+SERVICE_FILE=/etc/systemd/system/nsfw.service
+echo "[Unit]" >> $SERVICE_FILE
+echo "Description=NSFW" >> $SERVICE_FILE
+echo "Wants=network-online.target" >> $SERVICE_FILE
+echo "After=network.target network-online.target" >> $SERVICE_FILE
+echo "" >> $SERVICE_FILE
+echo "[Service]" >> $SERVICE_FILE
+echo "Type=simple" >> $SERVICE_FILE
+echo "User=root" >> $SERVICE_FILE
+echo "ExecStart=${NSFW_DIR}/nsfw.py ${NSFW_DIR}/stocks.conf" >> $SERVICE_FILE
+echo "SuccessExitStatus=0" >> $SERVICE_FILE
+echo "TimeoutStopSec=10" >> $SERVICE_FILE
+echo "Restart=on-failure" >> $SERVICE_FILE
+echo "RestartSec=5" >> $SERVICE_FILE
+echo "" >> $SERVICE_FILE
+echo "[Install]" >> $SERVICE_FILE
+echo "WantedBy=multi-user.target" >> $SERVICE_FILE
+
+systemctl daemon-reload
+echo "- created nsfw service"
+
+#  Optional - enable nsfw.service
 if [ "$ONBOOT" -eq "1" ]; then
-    crontab -l | { cat; echo "@reboot /usr/local/bin/nsfw >/var/log/nsfw.log 2>&1"; } | crontab -
-    echo "- Added crontab job at reboot"
+	systemctl enable nsfw.service
+    echo "- enabled nsfw at boot"
+else
+    echo "- nsfw not enabled at boot. To enable at boot, run"
+    echo "systemctl enable nsfw.service"
 fi
+
+
