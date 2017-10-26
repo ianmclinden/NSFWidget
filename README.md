@@ -28,23 +28,23 @@ Lightweight stock ticker tape for the Raspberry Pi Zero W, and Pimoroni's Four L
 ## Installation / Use:
 Log into the Raspberry Pi and clone the NSFWidget Repository and enter the directory:
 ```
-    git clone https://github.com/ianmclinden/NSFWidget.git
-    cd NSFWidget/
+    $ git clone https://github.com/ianmclinden/NSFWidget.git
+    $ cd NSFWidget/
 ```
 
 An [installation script](install.sh) has been provided to install NSFWidget and the required dependencies, and automatically load NSFWidget at boot. Just run
 ```
-    sudo ./install.sh
+    $ sudo ./install.sh
 ```
 
 or run with the `--noboot` flag to keep from automatically starting NSFWidget at boot.
 ```
-    sudo ./install.sh --noboot
+    $ sudo ./install.sh --noboot
 ```
 
 After installation, edit your stock preferences in `/etc/nsfw/stocks.conf`. Then, run NSFWidget, using
 ```
-    $nsfw
+    $ nsfw
 ```
 
 #### Manual Installation / Use:
@@ -55,7 +55,7 @@ which can be installed via pip.
 
 Then, run using the python environment using 
 ```
-    python nsfwidget.py [stocks_file.conf]
+    $ python nsfwidget.py [stocks_file.conf]
 ```
 
 ## Files:

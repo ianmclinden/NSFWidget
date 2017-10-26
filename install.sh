@@ -19,7 +19,7 @@ while test $# -gt 0; do
             echo " "
             echo "options:"
             echo "-h, --help       show brief help"
-            echo "--noboot         specify an action to use"
+            echo "--noboot         do not start at boot"
             exit 0
             ;;
         --noboot)
