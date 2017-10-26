@@ -44,7 +44,11 @@ or run with the `--noboot` flag to keep from automatically starting NSFWidget at
 
 After installation, edit your stock preferences in `/etc/nsfw/stocks.conf`. Then, run NSFWidget, using
 ```
-    $ nsfw
+    $ sudo service nsfw start
+```
+OR
+```
+    $ sudo systemctl start nsfw.service
 ```
 
 #### Manual Installation / Use:
