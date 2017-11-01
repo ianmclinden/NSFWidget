@@ -31,9 +31,7 @@ try:
     from yahoo_finance import Share
     import time
 except Exception as e:
-    sys.exit( str(e)
-             +"\nTry installing the module with `pip install module-name`")
-
+    sys.exit( str(e) +"\nTry installing the module with `pip install %s`"%str(e).split()[-1] )
 
 def main():
     flp.clear()
